@@ -18,8 +18,7 @@
 
 <script>
   /* eslint-disable */
-  // import axios from 'axios';
-  //const isValid = require('uk-postcode-validator');
+  import axios from 'axios';
   const PostcodesIO = require('postcodesio-client');
   const postcodes   = new PostcodesIO();
   
@@ -42,11 +41,21 @@
                 // Get the lat/long
                 postcodes.lookupPostcode(this.postcode)
                   .then(data => {
-                    const { longitude, latitude } = data;
-                    console.log(`${longitude},${latitude}`);
+                    const { longitude, latitude, region } = data;
+                    // console.log(`${longitude},${latitude}`);
+                    // Fetch the pollen count using the lat/long
+                    axios.get(`https://cors-anywhere.herokuapp.com/https://socialpollencount.co.uk/api/forecast?location=[${latitude},${longitude}]`)
+                      .then(res => {
+                        // Today's date
+                        const today = new Date().toISOString().substr(0,10);
+                        // Get today's level
+                        const todaysForecast = res.data.forecast.filter(forecast => forecast.date.startsWith(today));
+                        // console.log(todaysForecast);
+                        console.log(todaysForecast[0].pollen_count);
+                      });
                   });
               }
-            });        
+            });
       }
     }
 
