@@ -10,8 +10,11 @@
   </form>
 
   <section id="results">
-    <h4 id="foundLocation">Today's Pollen Level</h4>
-    <h2 id="levelText" class="animated">{{ pollen_count }}</h2>
+    <h4 v-if="error" class="error">{{ errorMsg }}</h4>
+    <h4 v-if="!error">{{ (location === '') ? "Today's Pollen Level" : `Pollen level for ${location}:` }}</h4>
+    <transition name="fade">
+      <h2 v-if="countKnown">{{ pollen_count }}</h2>
+    </transition>
   </section>
 </div>
 </template>
@@ -26,19 +29,26 @@
     name: 'PollenCount',
     data() {
       return {
+        error: false,
+        errorMsg: '',
         postcode: '',
+        countKnown: false,
         pollen_count: '',
         location: ''
       }
     },
     methods: {
       getCount(e) {
-        // Validate the postcode
+        // Setup
         e.preventDefault();
+        this.countKnown = false;
+        this.error = false;
+        // Validate the postcode
         postcodes.validate(this.postcode)
           .then(exists => {
             if (!exists) {
-              console.log('BAD POSTCODE');
+              this.errorMsg = 'Invalid Postcode';
+              this.error = true;
               } else {
                 // Get the lat/long
                 postcodes.lookupPostcode(this.postcode)
@@ -52,6 +62,7 @@
                         // Get today's level
                         const todaysForecast = res.data.forecast.filter(forecast => forecast.date.startsWith(today));
                         this.pollen_count = todaysForecast[0].pollen_count;
+                        this.countKnown = true;
                         // Get location to display
                         const location = nuts ? nuts : admin_district;
                         this.location = location;
@@ -67,6 +78,10 @@
 <style scoped>
   header h1 {
   font-size: 4rem; }
+
+  .error {
+    color: #ff0000;
+  }
 
   .pollen-box {
     margin-top: 2rem; }
@@ -109,5 +124,27 @@
   font-size: 1rem;
   width: 100%;
   max-width: 100%;
-  line-height: 1; }
+  line-height: 1;
+  }
+
+  input.has-error, input.has-error:hover, input.has-error:focus, input.has-error:active,
+  select.has-error,
+  select.has-error:hover,
+  select.has-error:focus,
+  select.has-error:active,
+  textarea.has-error,
+  textarea.has-error:hover,
+  textarea.has-error:focus,
+  textarea.has-error:active {
+  border: 1px solid #D33C40;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1), 0 0 6px #f4cecf; }
+
+  .fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+  }
+  
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  }
+
 </style>
