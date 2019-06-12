@@ -1,5 +1,7 @@
 # pc_vue
 
+Implementation of [Pollen Counter](https://github.com/nplayfair/pollen_counter) in Vue.
+
 ## Project setup
 ```
 npm install
