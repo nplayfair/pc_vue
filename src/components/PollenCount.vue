@@ -11,7 +11,7 @@
 
   <section id="results">
     <h4 id="foundLocation">Today's Pollen Level</h4>
-    <h2 id="levelText" class="animated">&nbsp;</h2>
+    <h2 id="levelText" class="animated">{{ pollen_count }}</h2>
   </section>
 </div>
 </template>
@@ -26,7 +26,9 @@
     name: 'PollenCount',
     data() {
       return {
-        postcode: ''
+        postcode: '',
+        pollen_count: '',
+        location: ''
       }
     },
     methods: {
@@ -41,7 +43,7 @@
                 // Get the lat/long
                 postcodes.lookupPostcode(this.postcode)
                   .then(data => {
-                    const { longitude, latitude, region } = data;
+                    const { longitude, latitude, nuts, admin_district } = data;
                     // Fetch the pollen count using the lat/long
                     axios.get(`https://cors-anywhere.herokuapp.com/https://socialpollencount.co.uk/api/forecast?location=[${latitude},${longitude}]`)
                       .then(res => {
@@ -49,7 +51,10 @@
                         const today = new Date().toISOString().substr(0,10);
                         // Get today's level
                         const todaysForecast = res.data.forecast.filter(forecast => forecast.date.startsWith(today));
-                        console.log(todaysForecast[0].pollen_count);
+                        this.pollen_count = todaysForecast[0].pollen_count;
+                        // Get location to display
+                        const location = nuts ? nuts : admin_district;
+                        this.location = location;
                       });
                   });
               }
