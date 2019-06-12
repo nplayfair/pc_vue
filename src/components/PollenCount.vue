@@ -70,5 +70,39 @@
     justify-content: center; }
 
   #postcode {
-    max-width: 50%; }
+    max-width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1.5rem;
+    }
+
+  .round-button {
+    display: inline-block;
+    padding: .75rem 1.25rem;
+    margin: 0 0 .5rem 0;
+    vertical-align: middle;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1;
+    color: white;
+    background: #0366EE;
+    border: 1px solid #0366EE;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  [type=color], [type=date], [type=datetime], [type=datetime-local], [type=email], [type=month], [type=number], [type=password], [type=search], [type=tel], [type=text], [type=url], [type=week], [type=time], select, textarea {
+  display: block;
+  border: 1px solid #cdcdcd;
+  border-radius: 4px;
+  padding: .75rem;
+  outline: none;
+  background: transparent;
+  margin-bottom: .5rem;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 100%;
+  line-height: 1; }
 </style>
